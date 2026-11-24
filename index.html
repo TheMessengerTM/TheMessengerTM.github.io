@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guilherme Hermenegildo, desenvolvedor backend júnior</title>
+  <meta name="description" content="Desenvolvedor backend júnior. Integro sistemas em produção com webhooks, Redis e APIs REST, e construo serviços em Python e Node.js.">
+  <meta property="og:title" content="Guilherme Hermenegildo, desenvolvedor backend júnior">
+  <meta property="og:description" content="Projetos em Python, FastAPI, PostgreSQL, NestJS e integrações em produção.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://themessengertm.github.io/">
+  <meta name="theme-color" content="#141A22">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <a class="marca" href="#inicio">Guilherme Hermenegildo</a>
+    <nav aria-label="Seções">
+      <a href="#projetos">Projetos</a>
+      <a href="#como-trabalho">Como trabalho</a>
+      <a href="#contato">Contato</a>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <section class="abertura" id="inicio">
+      <div class="abertura-texto">
+        <h1>Guilherme Hermenegildo</h1>
+        <p class="papel">Desenvolvedor backend júnior</p>
+        <p class="lide">Integro sistemas em produção na ASTER Segurança: webhooks, Redis, filas de etapas e APIs REST do SharePoint, do Outlook e do WhatsApp. Agora quero construir os serviços, e não só ligar um no outro.</p>
+        <p class="acoes">
+          <a class="botao" href="#projetos">Ver projetos</a>
+          <a class="link" href="https://github.com/TheMessengerTM">GitHub</a>
+          <a class="link" href="https://www.linkedin.com/in/guilherme-henrique-da-gra%C3%A7a-hermenegildo-b2b896309">LinkedIn</a>
+        </p>
+      </div>
+
+      <figure class="terminal" aria-labelledby="legenda-terminal">
+        <div class="terminal-barra">
+          <span class="terminal-titulo">Log do fluxo de inclusão</span>
+          <button class="repetir" type="button" aria-label="Reproduzir o log de novo">Reproduzir</button>
+        </div>
+        <ol class="log" aria-live="off">
+          <li><time>18:02:11</time><span class="cmd">POST /webhook/inclusao-comercial</span><span class="det">poll.vote item 342</span></li>
+          <li><time>18:02:11</time><span class="cmd">redis INCR trava:342:comercial</span><span class="det ok">= 1, segue</span></li>
+          <li><time>18:02:12</time><span class="cmd">PATCH lists/itens/342</span><span class="det ok">Status = Kit enviado, 200</span></li>
+          <li><time>18:02:12</time><span class="cmd">POST /webhook/inclusao-comercial</span><span class="det">poll.vote item 342</span></li>
+          <li><time>18:02:12</time><span class="cmd">redis INCR trava:342:comercial</span><span class="det aviso">= 2, descartado: voto repetido</span></li>
+          <li><time>18:02:14</time><span class="cmd">GET lists/matriz-bolsoes</span><span class="det aviso">503, nova tentativa em 5 s</span></li>
+          <li><time>18:02:19</time><span class="cmd">GET lists/matriz-bolsoes</span><span class="det ok">200</span></li>
+        </ol>
+        <figcaption id="legenda-terminal">O mesmo voto de enquete chega duas vezes. A trava no Redis deixa passar só o primeiro, e uma falha do SharePoint é resolvida com nova tentativa.</figcaption>
+      </figure>
+    </section>
+
+    <section class="secao" id="projetos" aria-labelledby="titulo-projetos">
+      <h2 id="titulo-projetos">Projetos de backend</h2>
+
+      <article class="projeto principal">
+        <header>
+          <h3><a href="https://github.com/TheMessengerTM/Gear-Sync-API">Gear Sync API</a></h3>
+          <p class="stack">Python, FastAPI, SQLAlchemy 2.0, Alembic, PostgreSQL, pytest, Docker, GitHub Actions</p>
+        </header>
+        <p>Sincroniza condomínios, unidades e moradores do sistema de controle de acesso GEAR com um banco PostgreSQL e expõe os dados numa API REST com relatórios. Nasceu de scripts que eu usava no trabalho para exportar cadastros para planilhas.</p>
+        <dl class="decisoes">
+          <div>
+            <dt>Sincronização idempotente</dt>
+            <dd>UPSERT com <code>INSERT ... ON CONFLICT DO UPDATE</code> e chave única por pessoa. Rodar duas vezes dá o mesmo resultado.</dd>
+          </div>
+          <div>
+            <dt>Falha isolada</dt>
+            <dd>Uma transação por condomínio. Se um falhar, os outros seguem e o erro fica registrado em <code>sync_runs</code>.</dd>
+          </div>
+          <div>
+            <dt>Limite de requisições</dt>
+            <dd>O cliente espaça as chamadas e, em HTTP 429, espera o tempo pedido pela API antes de tentar de novo.</dd>
+          </div>
+          <div>
+            <dt>Dados pessoais</dt>
+            <dd>A API nunca devolve CPF completo, RG, telefone ou e-mail, e senhas de acesso não são gravadas.</dd>
+          </div>
+        </dl>
+        <p class="nota">61 testes, cerca de 97% de cobertura, sem acessar a internet: um servidor GEAR falso com dados fictícios substitui a API real. O CI roda em Python 3.11 a 3.13, com SQLite e com PostgreSQL 16.</p>
+      </article>
+
+      <article class="projeto">
+        <header>
+          <h3><a href="https://github.com/TheMessengerTM/Controle-Financeiro-API">Controle Financeiro API</a></h3>
+          <p class="stack">TypeScript, NestJS, MongoDB</p>
+        </header>
+        <p>API para registrar receitas e despesas que devolve o saldo, o total de despesas e quanto foi gasto por impulso. Projeto da faculdade, na disciplina de Web Mobile, ligado a um projeto extensionista sobre os ODS 1 e 12.</p>
+      </article>
+
+      <h2 class="sub" id="titulo-producao">Integrações em produção</h2>
+      <p class="intro-lista">Automações que rodam todos os dias no trabalho. Os repositórios trazem os fluxos reais, sem credenciais, IDs ou dados de clientes.</p>
+
+      <table class="lista">
+        <caption class="visualmente-oculto">Integrações em produção</caption>
+        <thead>
+          <tr><th scope="col">Projeto</th><th scope="col">O que resolve</th><th scope="col">Ferramentas</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><a href="https://github.com/TheMessengerTM/Customer-Onboarding-Automation">Inclusão de clientes</a></th>
+            <td>Lê com IA o Termo de Aceite que chega por e-mail, registra no Microsoft Lists e conduz Financeiro, Cadastros, Comercial e Operacional por enquetes no WhatsApp, até a régua de contato de 1 ano. São 11 fluxos.</td>
+            <td>n8n, OpenAI, Redis, SharePoint, WAHA</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://github.com/TheMessengerTM/Customer-Closing-Automation">Encerramento de clientes</a></th>
+            <td>Do e-mail de encerramento à retirada da placa: prazo de 15 dias para o Comercial tentar recuperar o cliente e Operacional e Sistemas acionados em paralelo. São 11 fluxos.</td>
+            <td>n8n, Redis, SharePoint, Outlook, WAHA</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://github.com/TheMessengerTM/Alert-Automation">Alertas de telemetria</a></th>
+            <td>Leva os alertas da Cobli para a central de monitoramento quase em tempo real, sem repetir alerta e reenviando quando a central não responde.</td>
+            <td>n8n, Redis, REST</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://github.com/TheMessengerTM/Fulltrack-Report-Automation">Relatórios FullTrack</a></th>
+            <td>Robô que gera e baixa os relatórios do dia anterior e organiza os CSVs por ano, cliente, mês e tipo.</td>
+            <td>Python, Playwright</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://github.com/TheMessengerTM/Gear-Devices-Report-Automation">Dispositivos GEAR</a></th>
+            <td>Exporta o relatório de dispositivos de cada condomínio e confere se o CSV tem o mesmo número de registros da tela.</td>
+            <td>Python, Playwright</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://github.com/TheMessengerTM/Findme-Report-Automation">Relatórios Findme</a></th>
+            <td>Baixa os check-lists de cada viatura de ronda e guarda tudo por ano, mês e posto.</td>
+            <td>Python, Selenium, OpenCV</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://github.com/TheMessengerTM/LudosPro-Training-Export-Automation">Treinamentos LudosPro</a></th>
+            <td>Lê os cursos da plataforma, sem alterar nada, e monta um documento Word com o conteúdo de cada slide.</td>
+            <td>Python, Playwright, python-docx</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://github.com/TheMessengerTM/Offboarding-Report-Automation">Relatórios de desligamento</a></th>
+            <td>Relatórios semanais e mensal, com uma prévia para a equipe conferir antes da versão que vai para a diretoria.</td>
+            <td>Power Automate, SharePoint</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="mais"><a class="link" href="https://github.com/TheMessengerTM?tab=repositories">Todos os repositórios no GitHub</a></p>
+    </section>
+
+    <section class="secao" id="como-trabalho" aria-labelledby="titulo-como">
+      <h2 id="titulo-como">Problemas que já resolvo em produção</h2>
+      <p class="intro-lista">São os problemas de backend que aparecem quando sistemas diferentes conversam, e os que mais gosto de resolver.</p>
+      <dl class="problemas">
+        <div>
+          <dt>Evento duplicado</dt>
+          <dd>Webhook que chega duas vezes e clique duplo em enquete. Cada resposta é processada uma vez só, com chaves e travas no Redis. Na Gear Sync API, o mesmo princípio vira UPSERT com chave única.</dd>
+        </div>
+        <div>
+          <dt>Serviço fora do ar</dt>
+          <dd>Nós que acessam serviços externos tentam de novo até 5 vezes, com intervalo. As travas ficam de fora, porque repetir um <code>INCR</code> contaria duas vezes. Se a falha persistir, um fluxo de erro avisa com o link da execução.</dd>
+        </div>
+        <div>
+          <dt>Dado fora do formato</dt>
+          <dd>Validação em código antes de gravar. A IA, com saída estruturada, entra só onde o dado chega como texto livre, como no PDF de um formulário. Datas, CPF e CNPJ e a checagem de duplicidade ficam em código.</dd>
+        </div>
+        <div>
+          <dt>Segredos e dados pessoais</dt>
+          <dd>Um sanitizador remove credenciais, IDs, e-mails, telefones e nomes antes de qualquer fluxo ir para um repositório público, seguido de uma varredura de vazamentos.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="secao duas-colunas" aria-labelledby="titulo-ferramentas">
+      <div>
+        <h2 id="titulo-ferramentas">Ferramentas</h2>
+        <dl class="ferramentas">
+          <div><dt>Linguagens</dt><dd>Python, TypeScript, JavaScript, SQL</dd></div>
+          <div><dt>Backend</dt><dd>FastAPI, NestJS, SQLAlchemy, Alembic, Flask</dd></div>
+          <div><dt>Dados</dt><dd>PostgreSQL, MongoDB, Redis, SQLite</dd></div>
+          <div><dt>Qualidade e entrega</dt><dd>pytest, Docker, GitHub Actions, Git</dd></div>
+          <div><dt>Integração</dt><dd>APIs REST, webhooks, Microsoft 365 (SharePoint e Outlook), WhatsApp (WAHA), n8n, Power Automate</dd></div>
+          <div><dt>Automação web</dt><dd>Playwright, Selenium</dd></div>
+        </dl>
+      </div>
+      <div>
+        <h2 id="titulo-estudos">Estudos</h2>
+        <ul class="estudos">
+          <li><strong>Microsoft PL-900</strong>, Power Platform Fundamentals: os três roteiros da trilha, concluídos em setembro de 2026.</li>
+          <li><strong>Curso de Python</strong>: fundamentos, consumo de API, banco de dados, Flask e uma <a href="https://github.com/TheMessengerTM/Avaliacao-Pratica-Modulo-ll">avaliação prática</a> com API e CRUD em SQLite.</li>
+          <li><strong>Graduação</strong>: a Controle Financeiro API saiu da disciplina de Web Mobile.</li>
+        </ul>
+        <p class="nota">Uso o Claude Code como par de programação para alterar fluxos pela API do n8n, escrever scripts de apoio e revisar o que vai para produção.</p>
+      </div>
+    </section>
+
+    <section class="secao contato" id="contato" aria-labelledby="titulo-contato">
+      <h2 id="titulo-contato">Contato</h2>
+      <p>Procuro uma vaga de desenvolvedor backend júnior. Se o seu time trabalha com Python ou Node.js, vou gostar de conversar.</p>
+      <ul class="canais">
+        <li><a href="mailto:guilhermehermenegildo2@gmail.com">guilhermehermenegildo2@gmail.com</a></li>
+        <li><a href="https://www.linkedin.com/in/guilherme-henrique-da-gra%C3%A7a-hermenegildo-b2b896309">LinkedIn</a></li>
+        <li><a href="https://github.com/TheMessengerTM">github.com/TheMessengerTM</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p>Site estático publicado no GitHub Pages. <a href="https://github.com/TheMessengerTM/TheMessengerTM.github.io">Ver o código</a>.</p>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
