@@ -280,6 +280,34 @@ h2.sub { margin-top: 4rem; margin-bottom: 0.5rem; }
 .problemas dt { font-size: var(--t-2); font-weight: 600; }
 .problemas dd { margin: 0.45rem 0 0; color: var(--texto-2); }
 
+/* Experiência: linha do tempo, do cargo atual para o primeiro */
+.trajetoria {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: var(--medida);
+  border-left: 1px solid var(--linha);
+}
+.trajetoria li { position: relative; padding: 0 0 2.25rem 1.75rem; }
+.trajetoria li:last-child { padding-bottom: 0; }
+.trajetoria li::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 0.55rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--fundo);
+  border: 1px solid var(--texto-2);
+}
+.trajetoria li:first-child::before { background: var(--ok); border-color: var(--ok); }
+.trajetoria h3 { font-size: var(--t-2); font-weight: 600; margin: 0; }
+.trajetoria .periodo { color: var(--texto-2); font-size: 0.94rem; margin: 0.15rem 0 0.6rem; }
+.trajetoria p { margin: 0; }
+.trajetoria p + p { color: var(--texto-2); }
+.trajetoria .periodo + p { color: var(--texto-2); }
+
 /* Ferramentas e estudos */
 .duas-colunas {
   display: grid;
