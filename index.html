@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Guilherme Hermenegildo, desenvolvedor backend júnior</title>
-  <meta name="description" content="Desenvolvedor backend júnior. Integro sistemas em produção com webhooks, Redis e APIs REST, e construo serviços em Python e Node.js.">
-  <meta property="og:title" content="Guilherme Hermenegildo, desenvolvedor backend júnior">
+  <title>Guilherme Hermenegildo, desenvolvedor Python com foco em backend</title>
+  <meta name="description" content="Desenvolvedor Python em início de carreira, procurando vaga de backend júnior ou estágio. Integro sistemas em produção com webhooks, Redis e APIs REST, e construo serviços em Python e Node.js.">
+  <meta property="og:title" content="Guilherme Hermenegildo, desenvolvedor Python com foco em backend">
   <meta property="og:description" content="Projetos em Python, FastAPI, PostgreSQL, NestJS e integrações em produção.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://themessengertm.github.io/">
@@ -32,11 +32,15 @@
   <main id="conteudo">
     <section class="abertura" id="inicio">
       <div class="abertura-texto">
+        <p class="disponivel"><span class="ponto" aria-hidden="true"></span>Procurando vaga de backend júnior ou estágio</p>
         <h1>Guilherme Hermenegildo</h1>
-        <p class="papel">Desenvolvedor backend júnior</p>
-        <p class="lide">Estudo Análise e Desenvolvimento de Sistemas no Mackenzie e integro sistemas em produção na ASTER Segurança: webhooks, Redis, filas de etapas e APIs REST do SharePoint, do Outlook e do WhatsApp. Agora quero construir os serviços, e não só ligar um no outro.</p>
+        <p class="papel">Desenvolvedor Python em início de carreira, com foco em backend</p>
+        <p class="lide">Estudo Análise e Desenvolvimento de Sistemas no Mackenzie e integro sistemas em produção na ASTER Segurança: webhooks, Redis, filas de etapas e APIs REST. Agora quero construir os serviços, e não só ligar um no outro.</p>
         <p class="acoes">
-          <a class="botao" href="#projetos">Ver projetos</a>
+          <a class="botao" href="mailto:guilhermehermenegildo2@gmail.com">Falar comigo</a>
+          <a class="botao secundario" href="#projetos">Ver projetos</a>
+        </p>
+        <p class="redes">
           <a class="link" href="https://github.com/TheMessengerTM">GitHub</a>
           <a class="link" href="https://www.linkedin.com/in/guilherme-henrique-da-gra%C3%A7a-hermenegildo-b2b896309">LinkedIn</a>
         </p>
@@ -60,6 +64,15 @@
       </figure>
     </section>
 
+    <section class="resumo" aria-label="Resumo">
+      <dl>
+        <div><dt>Na ASTER Segurança</dt><dd>desde jun. 2024</dd></div>
+        <div><dt>Desenvolvendo em produção</dt><dd>desde set. 2025</dd></div>
+        <div><dt>ADS no Mackenzie</dt><dd>conclusão em 2028</dd></div>
+        <div><dt>Stack principal</dt><dd>Python, FastAPI, PostgreSQL</dd></div>
+      </dl>
+    </section>
+
     <section class="secao" id="projetos" aria-labelledby="titulo-projetos">
       <h2 id="titulo-projetos">Projetos de backend</h2>
 
@@ -69,6 +82,29 @@
           <p class="stack">Python, FastAPI, SQLAlchemy 2.0, Alembic, PostgreSQL, pytest, Docker, GitHub Actions</p>
         </header>
         <p>Sincroniza condomínios, unidades e moradores do sistema de controle de acesso GEAR com um banco PostgreSQL e expõe os dados numa API REST com relatórios. Nasceu de scripts que eu usava no trabalho para exportar cadastros para planilhas.</p>
+
+        <ol class="fluxo" aria-label="Caminho dos dados na Gear Sync API">
+          <li><strong>API GEAR</strong><span>ou servidor falso nos testes</span></li>
+          <li><strong>GearClient</strong><span>intervalo entre chamadas, espera em HTTP 429</span></li>
+          <li><strong>sync</strong><span>UPSERT, uma transação por condomínio</span></li>
+          <li><strong>PostgreSQL</strong><span>esquema versionado com Alembic</span></li>
+          <li><strong>FastAPI</strong><span>/condominios, /pessoas, /relatorios</span></li>
+        </ol>
+
+        <div class="codigo-e-decisoes">
+        <figure class="codigo">
+          <figcaption>Trecho de <a href="https://github.com/TheMessengerTM/Gear-Sync-API/blob/main/src/gear_sync/sync.py">sync.py</a>: cada condomínio é gravado em uma transação, e quem saiu da API sai do banco.</figcaption>
+<pre><code><span class="k">with</span> session.begin():  <span class="c"># tudo ou nada para este condomínio</span>
+    upsert(session, Condominium, [condominium_row(condo)], [<span class="s">"id"</span>])
+    <span class="k">for</span> lote <span class="k">in</span> chunks(persons):
+        upsert(session, Person, lote, [<span class="s">"kind"</span>, <span class="s">"gear_id"</span>])
+
+    <span class="c"># quem está no banco mas não veio na API</span>
+    vindos = {(p[<span class="s">"kind"</span>], p[<span class="s">"gear_id"</span>]) <span class="k">for</span> p <span class="k">in</span> persons}
+    sumiram = no_banco - vindos
+    <span class="k">if</span> sumiram:
+        session.execute(delete(Person).where(...))</code></pre>
+        </figure>
         <dl class="decisoes">
           <div>
             <dt>Sincronização idempotente</dt>
@@ -87,6 +123,7 @@
             <dd>A API nunca devolve CPF completo, RG, telefone ou e-mail, e senhas de acesso não são gravadas.</dd>
           </div>
         </dl>
+        </div>
         <p class="nota">61 testes, cerca de 97% de cobertura, sem acessar a internet: um servidor GEAR falso com dados fictícios substitui a API real. O CI roda em Python 3.11 a 3.13, com SQLite e com PostgreSQL 16.</p>
       </article>
 
@@ -99,7 +136,7 @@
       </article>
 
       <h2 class="sub" id="titulo-producao">Integrações em produção</h2>
-      <p class="intro-lista">Automações que rodam todos os dias no trabalho. Os repositórios trazem os fluxos reais, sem credenciais, IDs ou dados de clientes.</p>
+      <p class="intro-lista">São 22 fluxos em n8n e 4 robôs em Python rodando todos os dias no trabalho. Os repositórios trazem os fluxos reais, sem credenciais, IDs ou dados de clientes.</p>
 
       <table class="lista">
         <caption class="visualmente-oculto">Integrações em produção</caption>
