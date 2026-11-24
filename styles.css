@@ -163,8 +163,19 @@ h2 { font-size: 1.66rem; letter-spacing: -0.015em; font-weight: 600; margin: 0 0
 .icones.grandes li { width: 5.5rem; }
 .icones.grandes img { width: 44px; height: 44px; }
 
+/* Rótulo de grupo (Backend, n8n, Robôs...) */
+.grupo { font-size: 0.95rem; font-weight: 600; color: var(--texto-2); margin: 2.25rem 0 0.9rem; }
+
 /* Demais projetos */
-.grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+.grade { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+
+/* Ferramentas em grupos, duas colunas de grupos no desktop */
+.ferramentas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem 3rem; }
+.grupo-ferramentas { min-width: 0; }
+.ferramentas .grupo { margin-top: 0; }
+.ferramentas .icones img { width: 40px; height: 40px; }
+.ferramentas .icones li { width: 5rem; }
+.repos-curso { color: var(--texto-2); font-size: 0.9rem; margin: 1.25rem 0 0; }
 .bloco {
   display: flex; flex-direction: column; gap: 0.35rem;
   padding: 1.2rem 1.25rem 1.3rem;
@@ -213,6 +224,7 @@ h2 { font-size: 1.66rem; letter-spacing: -0.015em; font-weight: 600; margin: 0 0
   .fluxo li + li::before { left: 1.25rem; top: calc(-0.6rem - 1px); width: 0; height: 0.6rem; border-top: 0; border-left: 1px solid var(--texto-2); }
   .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .problemas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ferramentas { grid-template-columns: 1fr; }
   .duas-colunas { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
