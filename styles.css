@@ -175,6 +175,27 @@ h2 { font-size: 1.66rem; letter-spacing: -0.015em; font-weight: 600; margin: 0 0
 .ferramentas .grupo { margin-top: 0; }
 .ferramentas .icones img { width: 40px; height: 40px; }
 .ferramentas .icones li { width: 5rem; }
+.grupo-ferramentas.largo { grid-column: 1 / -1; }
+
+/* Ícone em texto para ferramentas sem logotipo disponível */
+.sigla {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--superficie-2);
+  border: 1px solid var(--linha);
+  color: var(--texto);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+/* Etiquetas de ferramentas (experiência e plataformas) */
+.chips { list-style: none; margin: 0.6rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chips li { padding: 0.2rem 0.6rem; border-radius: 999px; border: 1px solid var(--linha); color: var(--texto-2); font-size: 0.8rem; }
+
 .repos-curso { color: var(--texto-2); font-size: 0.9rem; margin: 1.25rem 0 0; }
 .bloco {
   display: flex; flex-direction: column; gap: 0.35rem;
@@ -200,12 +221,12 @@ h2 { font-size: 1.66rem; letter-spacing: -0.015em; font-weight: 600; margin: 0 0
 /* Experiência e formação */
 .duas-colunas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3rem; }
 .trajetoria { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--linha); }
-.trajetoria li { position: relative; padding: 0 0 1.5rem 1.5rem; display: flex; flex-direction: column; }
-.trajetoria li:last-child { padding-bottom: 0; }
-.trajetoria li::before { content: ""; position: absolute; left: -5px; top: 0.5rem; width: 9px; height: 9px; border-radius: 50%; background: var(--fundo); border: 1px solid var(--texto-2); }
-.trajetoria li:first-child::before { background: var(--ok); border-color: var(--ok); }
+.trajetoria > li { position: relative; padding: 0 0 1.5rem 1.5rem; display: flex; flex-direction: column; }
+.trajetoria > li:last-child { padding-bottom: 0; }
+.trajetoria > li::before { content: ""; position: absolute; left: -5px; top: 0.5rem; width: 9px; height: 9px; border-radius: 50%; background: var(--fundo); border: 1px solid var(--texto-2); }
+.trajetoria > li:first-child::before { background: var(--ok); border-color: var(--ok); }
 .trajetoria strong { font-weight: 600; }
-.trajetoria span { color: var(--texto-2); font-size: 0.92rem; }
+.trajetoria > li > span { color: var(--texto-2); font-size: 0.92rem; }
 
 /* Contato */
 .contato h2 { font-size: clamp(2rem, 4vw, 2.8rem); letter-spacing: -0.03em; margin-bottom: 0.75rem; }
